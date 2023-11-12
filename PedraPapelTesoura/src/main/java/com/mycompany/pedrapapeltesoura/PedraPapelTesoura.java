@@ -8,36 +8,82 @@ public class PedraPapelTesoura {
         Scanner scanner = new Scanner(System.in);
         Random random = new Random();
         
-        System.out.println("Qual seu nome, jogador?");
-        String nomeJogHumano = scanner.nextLine();
-        
-        Jogador jogadorHumano = new Jogador(nomeJogHumano);
-        Jogador jogadorMaquina = new Jogador("Maquina");
+        System.out.println("Escolha o tipo de jogo: (1) Humano x Maquina (2) Maquina x Maquina (3) Humano x Humano");
+        int tipoDeJogadores = Integer.parseInt(scanner.nextLine());
         
         System.out.println("Escolha o jogo: (1)Jogo Único | (2)Melhor de 3");
         int tipoDeJogo = Integer.parseInt(scanner.nextLine());
         
         int nQtdVitoriasNecessarias = 1;
         
+        
         //Caso o tipo do jogo seja melhor de 3, então a quantidade de vitórias é 3
         if (tipoDeJogo == 2){
             nQtdVitoriasNecessarias = 3;
         }
         
-        while(jogadorHumano.getQuantVitorias() < nQtdVitoriasNecessarias && jogadorMaquina.getQuantVitorias() < nQtdVitoriasNecessarias){
-            System.out.println("(1)Papel, (2)pedra ou (3)tesoura?");
-            int selecaoEscolha = Integer.parseInt(scanner.nextLine());
-
-            jogadorHumano.setEscolha(newCoisa(selecaoEscolha));      
-            jogadorMaquina.setEscolha(newCoisa(random.nextInt(3) + 1));
-
-            jogar(jogadorHumano, jogadorMaquina);
+        if(tipoDeJogadores == 1) {
+            System.out.println("Qual seu nome, jogador?");
+            String nomeJogHumano = scanner.nextLine();
+        
+            Jogador jogadorHumano = new Jogador(nomeJogHumano);
+            Jogador jogadorMaquina = new Jogador("Maquina");
+            
+            escolheEJoga(jogadorHumano, jogadorMaquina, nQtdVitoriasNecessarias, tipoDeJogadores);
+        } else if(tipoDeJogadores == 2) {
+            Jogador jogadorMaquina1 = new Jogador("Maquina 1");
+            Jogador jogadorMaquina2 = new Jogador("Maquina 2");
+            
+            escolheEJoga(jogadorMaquina1, jogadorMaquina2, nQtdVitoriasNecessarias, tipoDeJogadores);
+        } else {
+            System.out.println("Qual seu nome, jogador 1?");
+            String nomeJogHumano1 = scanner.nextLine();
+            Jogador jogadorHumano1 = new Jogador(nomeJogHumano1);
+            
+            System.out.println("Qual seu nome, jogador 2?");
+            String nomeJogHumano2 = scanner.nextLine();
+            Jogador jogadorHumano2 = new Jogador(nomeJogHumano2);
+            
+            escolheEJoga(jogadorHumano1, jogadorHumano2, nQtdVitoriasNecessarias, tipoDeJogadores);
         }
         
-        if (jogadorHumano.getQuantVitorias() == nQtdVitoriasNecessarias){
-            System.out.println("Você ganhou o jogo " + jogadorHumano.getNome() + ", parabens!");
+        
+    }
+    
+    private static void escolheEJoga(Jogador jogador1, Jogador jogador2, int nQtdVitoriasNecessarias, int tipoDeJogadores) {
+        Scanner scanner = new Scanner(System.in);
+        Random random = new Random();
+        
+        while(jogador1.getQuantVitorias() < nQtdVitoriasNecessarias && jogador2.getQuantVitorias() < nQtdVitoriasNecessarias){
+            if(tipoDeJogadores == 1) {
+                System.out.println("(1)Papel, (2)pedra ou (3)tesoura?");
+                int selecaoEscolha = Integer.parseInt(scanner.nextLine());
+
+                jogador1.setEscolha(newCoisa(selecaoEscolha));      
+                jogador2.setEscolha(newCoisa(random.nextInt(3) + 1));
+
+            } else if(tipoDeJogadores == 2) {
+                jogador1.setEscolha(newCoisa(random.nextInt(3) + 1));
+                jogador2.setEscolha(newCoisa(random.nextInt(3) + 1));
+               
+            } else {
+                System.out.println("(1)Papel, (2)pedra ou (3)tesoura, jogador 1?");
+                int selecaoEscolhaJog1 = Integer.parseInt(scanner.nextLine());
+                jogador1.setEscolha(newCoisa(selecaoEscolhaJog1));
+                
+                System.out.println("(1)Papel, (2)pedra ou (3)tesoura, jogador 2?");
+                int selecaoEscolhaJog2 = Integer.parseInt(scanner.nextLine());
+                jogador2.setEscolha(newCoisa(selecaoEscolhaJog2));
+            }
+            
+            jogar(jogador1, jogador2);
+          
+        }
+        
+        if (jogador1.getQuantVitorias() == nQtdVitoriasNecessarias){
+            System.out.println(jogador1.getNome() + " ganhou o jogo ");
         }else{
-            System.out.println("Você perdeu o jogo " + jogadorHumano.getNome() + ", tente novamente!");
+            System.out.println(jogador2.getNome() + " ganhou o jogo ");
         }
     }
     
@@ -50,16 +96,16 @@ public class PedraPapelTesoura {
         return new Tesoura();
     }
     
-    private static void jogar(Jogador pHumano, Jogador pMaquina) {
-        Class<?> escolhaHumano = pHumano.getEscolha().getClass();
-        Class<?> escolhaMaquina = pMaquina.getEscolha().getClass();
+    private static void jogar(Jogador jogador1, Jogador jogador2) {
+        Class<?> escolhaHumano = jogador1.getEscolha().getClass();
+        Class<?> escolhaMaquina = jogador2.getEscolha().getClass();
         
-        System.out.println("Você escolheu: " + escolhaHumano.getSimpleName());
-        System.out.println("A maquina escolheu: " + escolhaMaquina.getSimpleName()); 
+        System.out.println(jogador1.getNome() + " escolheu: " + escolhaHumano.getSimpleName());
+        System.out.println(jogador2.getNome() + " escolheu: " + escolhaMaquina.getSimpleName()); 
         
         //Caso escolha seja igual então continua o jogo 
         if (escolhaHumano == escolhaMaquina){
-            System.out.println("Round Empatado! Você: " + pHumano.getQuantVitorias() + " x Maquina: " + pMaquina.getQuantVitorias()); 
+            System.out.println("Round Empatado!  " + jogador1.getNome()+ ": " + jogador1.getQuantVitorias() + " x " + jogador2.getNome() + ": " + jogador2.getQuantVitorias()); 
             return;
         }
         
@@ -67,11 +113,11 @@ public class PedraPapelTesoura {
         if (escolhaHumano == Papel.class && escolhaMaquina == Pedra.class || 
             escolhaHumano == Pedra.class && escolhaMaquina == Tesoura.class ||
             escolhaHumano == Tesoura.class && escolhaMaquina == Papel.class){
-          pHumano.ganhou();
-          System.out.println("Venceu o Round! Você: " + pHumano.getQuantVitorias() + " x Maquina: " + pMaquina.getQuantVitorias()); 
+          jogador1.ganhou();
+          System.out.println(jogador1.getNome() + " venceu o Round! " + jogador1.getNome()+ ": " + jogador1.getQuantVitorias() + " x " + jogador2.getNome() + ": " + jogador2.getQuantVitorias()); 
         }else{
-            pMaquina.ganhou();
-            System.out.println("Perdeu o Round! Você: " + pHumano.getQuantVitorias() + " x Maquina: " + pMaquina.getQuantVitorias()); 
+            jogador2.ganhou();
+            System.out.println(jogador2.getNome() + " venceu o Round! " + jogador1.getNome()+ ": " + jogador1.getQuantVitorias() + " x " + jogador2.getNome() + ": " + jogador2.getQuantVitorias()); 
         }   
    }   
 }
